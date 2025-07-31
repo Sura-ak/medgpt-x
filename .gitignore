@@ -1,0 +1,34 @@
+# Ignore virtual environments
+venv/
+ENV/
+env/
+
+# Ignore Python cache files
+__pycache__/
+*.py[cod]
+*.pyo
+
+# Ignore Jupyter notebooks and data
+*.ipynb
+*.csv
+*.tsv
+
+# Ignore images and outputs
+*.jpg
+*.jpeg
+*.png
+*.svg
+*.webp
+*.bmp
+*.gif
+
+# Ignore log files
+*.log
+
+# VSCode folders
+.vscode/
+.settings/
+
+# OS files
+.DS_Store
+Thumbs.db
