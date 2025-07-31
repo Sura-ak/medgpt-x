@@ -38,28 +38,40 @@ class MedicalSummarizer:
         }
 
     def summarize(self, predictions):
-        if not predictions:
-            return "✅ No conditions detected. The chest X-ray appears normal."
+     if not predictions:
+        return "✅ No conditions detected. The chest X-ray appears normal."
 
-        summaries = []
+     # Remove "No Finding" if other confident conditions exist
+     has_significant_findings = any(
+     condition != "No Finding" and confidence > 0.5 for condition, confidence in predictions
+     )
 
-        for condition, confidence in predictions:
-            if condition not in self.condition_explanations:
-                continue  # Skip unknown conditions, no bluff
+     filtered_preds = [
+        (condition, confidence)
+        for condition, confidence in predictions
+        if not (condition == "No Finding" and has_significant_findings)
+     ]
+     filtered_preds.sort(key=lambda x: x[1], reverse=True)  # Sort by confidence
 
-            info = self.condition_explanations[condition]
+     summaries = []
 
-            summary = f"""🔍 **{condition}** ({confidence * 100:.1f}% confidence)
+     for condition, confidence in filtered_preds:
+        if condition not in self.condition_explanations:
+            continue  # Skip unknown conditions, no bluff
 
- Condition Overview: 
-{info['overview']}
+        info = self.condition_explanations[condition]
 
-What to Do Next:  
-{info['next_steps']}
+        summary = f"""🔍 **{condition}** ({confidence * 100:.1f}% confidence)
 
-Health Insight:  
-{info['insight']}
-"""
-            summaries.append(summary)
+     Condition Overview: 
+     {info['overview']}
 
-        return "\n\n---\n\n".join(summaries)
+    What to Do Next:  
+    {info['next_steps']}
+
+    Health Insight:  
+    {info['insight']}
+   """
+        summaries.append(summary)
+
+     return "\n\n---\n\n".join(summaries)
